@@ -5,21 +5,23 @@
 """
 import hashlib
 import json
+from random import randint
 
 class Block():
-    def __init__(self, data, root, id, prev):
+    def __init__(self, data, root, id, prev, nonce=None, diff=None):
         self.data = data
         self.root = root
         self.id = id
-        #self.nonce = nonce
         self.prev = prev
+        self.nonce = nonce
+        self.diff = diff
         self.hash = self.get_hash()
     
     def generate_string(self):
         """ Generate a string object of the block (to be used for hash)
             JSON is only preference. We can also use Marshal or Pickle
         """
-        json_str = json.dumps({"data":self.data, "root":self.root, "prev":self.prev})
+        json_str = json.dumps({"data":self.data, "root":self.root, "id":self.id, "prev":self.prev, "nonce":self.nonce, "diff":self.diff})
         return json_str
     
     def get_hash(self):
@@ -27,12 +29,24 @@ class Block():
         """
         return hashlib.md5(self.generate_string().encode()).hexdigest()
     
+#    def mine(self, data):
+#        """ Generate next block which will store new data. 
+#            Current hash is the next.prev
+#        """
+#        return Block(data, self.root, self.id+1, self.hash)
+    def check(self, digest):
+        return digest[0:self.diff] == '0'*self.diff
+
     def mine(self, data):
-        """ Generate next block which will store new data. 
-            Current hash is the next.prev
+        """ Generate new block by looking for a suitable nonce
         """
-        return Block(data, self.root, self.id+1, self.hash)
-    
+        while True:
+            inonce = randint(0,int('fffff', 16))
+            new_block = Block(data, self.root, self.id+1, self.hash, inonce, self.diff)
+            if new_block.check(new_block.hash):
+                return new_block
+        return False
+
     def adjust_diff(self):
         """ TODO implement difficulty auto adjustment if possible
         """
