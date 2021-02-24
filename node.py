@@ -37,5 +37,4 @@ class Node():
                 if self.check(d, b.difficulty):
                     return nonce
     
-    def mine(self):
-
+    #def mine(self):
