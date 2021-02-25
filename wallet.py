@@ -8,6 +8,8 @@
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pss
 from Crypto.Hash import SHA256
+from transaction import Transaction
+from trans_pool import TransactionPool
 
 def data_hash(data):
     return SHA256.new(data.encode())
@@ -35,3 +37,23 @@ class Wallet():
             print('Not authentic')
             return False
         return True
+
+    def create_transaction(self, receiver, amount, pool):
+        if (amount > self.balance):
+            print('Transaction not allowed: Insufficient balance!')
+            return False
+        tmp = pool.check(self)
+        if tmp == False:
+            new_trans = Transaction(self, receiver, amount)
+            pool.add(new_trans)
+            return new_trans.id
+        else:
+            tmp.update(self, receiver, amount)
+            return tmp.id
+
+# Test wallet
+w1 = Wallet(200)
+w2 = Wallet(480)
+poolz = TransactionPool()
+id1 = w1.create_transaction(w2, 50, poolz)
+id2 = w1.create_transaction(w1, 10, poolz)
