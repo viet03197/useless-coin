@@ -5,7 +5,6 @@
 """
 import uuid
 import json
-from wallet import Wallet
 
 class Transaction():
     def __init__(self, w1, w2, amount=None):
@@ -46,7 +45,7 @@ class Output():
 def output_list(outputs):
     return ''.join([x.string_repre() for x in outputs])
         
-
+""" TEST
 w1 = Wallet(200)
 w2 = Wallet(200)
 t = Transaction(w1, w2, amount=50)
@@ -58,3 +57,4 @@ print(w1.balance, w1.pubkey)
 print(t.id, t.input)
 for o in t.output:
     print(o.amount, o.pubkey)
+"""
