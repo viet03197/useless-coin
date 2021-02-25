@@ -23,3 +23,10 @@ class Wallet():
         """ Sign data with the private key of this wallet
         """
         return pss.new(self.key).sign(data_hash(data))
+    
+    def verify_transaction(self, trans):
+        try:
+            verifier = pss.new(self.key).verify(data_hash(trans.output),trans.input.signature)
+        except:
+            return False
+        return True
