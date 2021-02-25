@@ -25,8 +25,8 @@ class Transaction():
             return
         #out = Output(w1.balance - amount, w1.pubkey)
         self.output[1].amount -= amount
-        #out = Output(amount, w2.pubkey)
-        #self.output.append(out)
+        out = Output(amount, w2.pubkey)
+        self.output.append(out)
         outputs_string = output_list(self.output)
         self.input = Input(w1, outputs_string)
         return

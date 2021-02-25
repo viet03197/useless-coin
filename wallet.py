@@ -50,8 +50,8 @@ class Wallet():
         else:
             #tmp.update(self, receiver, tmp.output[0].amount)
             new_trans = Transaction(self, receiver, amount)
-            new_trans.update(self, receiver, tmp.output[0].amount)
-            pool.add(new_trans)
+            tmp.update(self, receiver, amount)
+            #pool.add(new_trans)
             return tmp.id
 
 # Test wallet
