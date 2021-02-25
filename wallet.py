@@ -10,7 +10,10 @@ from Crypto.Signature import pss
 from Crypto.Hash import SHA256
 
 def data_hash(data):
-    return SHA256.new(data)
+    return SHA256.new(data.encode())
+
+def output_list(outputs):
+    return ''.join([x.string_repre() for x in outputs])
 
 class Wallet():
     def __init__(self, balance):
@@ -26,7 +29,9 @@ class Wallet():
     
     def verify_transaction(self, trans):
         try:
-            verifier = pss.new(self.key).verify(data_hash(trans.output),trans.input.signature)
+            verifier = pss.new(self.key).verify(data_hash(output_list(trans.output)),trans.input.signature)
+            print('Authentic')
         except:
+            print('Not authentic')
             return False
         return True
