@@ -9,7 +9,10 @@ import json
 class Transaction():
     def __init__(self, w1, w2, amount=None):
         self.id = self.generate_id().hex
-        self.output = []
+        if w1.balance < amount:
+            self.output = []
+        else:
+            self.output = [Output(amount, w2.pubkey), Output(w1.balance-amount, w1.pubkey)]
         outputs_string = output_list(self.output)
         self.input = Input(w1, outputs_string)
         return
@@ -21,9 +24,9 @@ class Transaction():
         if amount > w1.balance:
             return
         #out = Output(w1.balance - amount, w1.pubkey)
-        w1.balance -= amount
-        out = Output(amount, w2.pubkey)
-        self.output.append(out)
+        self.output[1].amount -= amount
+        #out = Output(amount, w2.pubkey)
+        #self.output.append(out)
         outputs_string = output_list(self.output)
         self.input = Input(w1, outputs_string)
         return

@@ -43,12 +43,14 @@ class Wallet():
             print('Transaction not allowed: Insufficient balance!')
             return False
         tmp = pool.check(self)
-        new_trans = Transaction(self, receiver, amount)
         if tmp == False:
+            new_trans = Transaction(self, receiver, amount)
             pool.add(new_trans)
             return new_trans.id
         else:
-            tmp.update(self, receiver, amount)
+            #tmp.update(self, receiver, tmp.output[0].amount)
+            new_trans = Transaction(self, receiver, amount)
+            new_trans.update(self, receiver, tmp.output[0].amount)
             pool.add(new_trans)
             return tmp.id
 

@@ -15,6 +15,9 @@ class TransactionPool():
         return
 
     def check(self, w):
+        """ Used to look for transactions that haven't been performed yet.
+            So we need to reduce the amount of money first
+        """
         for i in range(len(self.transaction)):
             if self.transaction[i].input.address == w.pubkey:
                 return self.transaction[i]
