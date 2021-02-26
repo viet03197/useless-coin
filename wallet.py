@@ -18,7 +18,7 @@ def output_list(outputs):
     return ''.join([x.string_repre() for x in outputs])
 
 class Wallet():
-    def __init__(self, balance):
+    def __init__(self, balance=0):
         self.balance = balance
         # TODO GENERATE PAIRS OF KEY !!!
         self.key = RSA.generate(1024)
