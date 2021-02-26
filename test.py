@@ -21,13 +21,19 @@ for p in m1.pool.transaction:
     for o in p.output:
         print(o.string_repre())
 m1.mine()
+w1.update_balance(m1.blockchain)
+w2.update_balance(m2.blockchain)
+w3.update_balance(m1.blockchain)
+print('current balance: ',w1.balance, w2.balance, w3.balance)
+print('============================================================')
 t3 = w1.create_transaction(w3, 60, m1.pool)
 t4 = w3.create_transaction(w1, 19, m1.pool)
-print('============================================================')
 for p in m2.pool.transaction:
     print(p.id, p.input.amount, p.input.address)
     for o in p.output:
         print(o.string_repre())
 m2.mine()
-print(m1.blockchain.chain)
-print(m2.blockchain.chain)
+w1.update_balance(m1.blockchain)
+w2.update_balance(m2.blockchain)
+w3.update_balance(m1.blockchain)
+print('current balance: ',w1.balance, w2.balance, w3.balance)

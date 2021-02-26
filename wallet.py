@@ -53,7 +53,28 @@ class Wallet():
             tmp.update(self, receiver, amount)
             #pool.add(new_trans)
             return tmp.id
-
+    
+    def update_balance(self, chain):
+        """ Look for transactions related to this wallet in the last mined block
+        """
+        result = self.balance
+        increase = 0
+        decrease = 0
+        if isinstance(chain.chain, list):
+            for t in chain.chain[-1].data:
+                if t.input.address == self.pubkey:
+                    decrease += result - t.output[1].amount
+                else:
+                    for o in t.output:
+                        if o.pubkey == self.pubkey:
+                            print(f'receive {o.amount}')
+                            increase += o.amount
+            self.balance += (increase - decrease)
+            return
+        else:
+            return
+        
+"""
 # Test wallet
 w1 = Wallet(200)
 w2 = Wallet(480)
@@ -64,5 +85,7 @@ for p in poolz.transaction:
     print(p.id, p.input.amount, p.input.address)
     for o in p.output:
         print(o.string_repre())
+print(poolz.valid_transactions())
 print(w1.balance)
 print(w2.balance)
+"""
