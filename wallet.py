@@ -38,19 +38,19 @@ class Wallet():
             return False
         return True
 
-    def create_transaction(self, receiver, amount, pool):
+    def create_transaction(self, receiver_pubkey, amount, pool):
         if (amount > self.balance):
             print('Transaction not allowed: Insufficient balance!')
             return False
         tmp = pool.check(self)
         if tmp == False:
-            new_trans = Transaction(self, receiver, amount)
+            new_trans = Transaction(self, receiver_pubkey, amount)
             pool.add(new_trans)
             return new_trans.id
         else:
             #tmp.update(self, receiver, tmp.output[0].amount)
-            new_trans = Transaction(self, receiver, amount)
-            tmp.update(self, receiver, amount)
+            new_trans = Transaction(self, receiver_pubkey, amount)
+            tmp.update(self, receiver_pubkey, amount)
             #pool.add(new_trans)
             return tmp.id
     
