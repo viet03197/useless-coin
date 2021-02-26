@@ -17,6 +17,9 @@ class Transaction():
         self.input = Input(w1, outputs_string)
         return
     
+    def string_repre(self):
+        return self.input.string_repre().join(output_list(self.output))
+
     def generate_id(self):
         return uuid.uuid4()
     
@@ -36,6 +39,8 @@ class Input():
         self.amount = w1.balance
         self.address = w1.pubkey
         self.signature = w1.sign_data(output)
+    def string_repre(self):
+        return json.dumps({"amount":self.amount, "address":str(self.address), "signature":str(self.signature)})
 
 class Output():
     def __init__(self, amount, pubkey):

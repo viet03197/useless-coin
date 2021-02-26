@@ -17,11 +17,16 @@ class Block():
         self.diff = diff
         self.hash = self.get_hash()
     
+    def serialize_data(self):
+        if isinstance(self.data, list):
+            return ''.join([x.string_repre() for x in self.data])
+        return self.data
+
     def generate_string(self):
         """ Generate a string object of the block (to be used for hash)
             JSON is only preference. We can also use Marshal or Pickle
         """
-        json_str = json.dumps({"data":self.data, "root":self.root, "id":self.id, "prev":self.prev, "nonce":self.nonce, "diff":self.diff})
+        json_str = json.dumps({"data":self.serialize_data(), "root":self.root, "id":self.id, "prev":self.prev, "nonce":self.nonce, "diff":self.diff})
         return json_str
     
     def get_hash(self):

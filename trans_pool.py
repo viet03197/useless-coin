@@ -22,3 +22,15 @@ class TransactionPool():
             if self.transaction[i].input.address == w.pubkey:
                 return self.transaction[i]
         return False
+    
+    def valid_transactions(self):
+        result = []
+        for t in self.transaction:
+            inp = t.input.amount
+            out = sum([o.amount for o in t.output])
+            if inp == out:
+                result.append(t)
+        return result
+    
+    def clear(self):
+        self.transaction = []
