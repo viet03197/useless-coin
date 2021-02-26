@@ -11,7 +11,7 @@ class UCoin():
         """
         # Placeholder for root
         root = None
-        return Block(data, root, 0, None, diff=4)
+        return Block(data, root, 0, None, diff=3)
     
     def new_block(self, data):
         """ Add new block to the current blockchain
@@ -38,10 +38,11 @@ class UCoin():
             self.chain = new_chain[:] # Create a copy, not reference
         return
 
-#""" Test
+
+""" Test
 uc = UCoin('Very first block!')
 uc.new_block('A transaction here')
 uc.new_block('Another transaction here')
 for b in uc.chain:
     print(b.hash, b.prev, b.id)
-#"""
+"""
