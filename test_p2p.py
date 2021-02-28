@@ -1,4 +1,5 @@
-from p2p import P2PNode
+from node import Node
+#from walletapp import WalletApp
 import socket
 import sys
 import threading
@@ -11,7 +12,7 @@ import threading
 
 host = socket.gethostname()
 port = int(sys.argv[-1])
-node = P2PNode(port)
+node = Node(port)
 is_first = len(sys.argv) == 3
 if is_first:
     t = threading.Thread(target=node.listening)

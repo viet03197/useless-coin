@@ -7,6 +7,7 @@ from transaction import Transaction, output_list
 from trans_pool import TransactionPool
 
 w1 = Wallet(465)
+print(w1.pubkey.exportKey)
 w2 = Wallet(344)
 w3 = Wallet(162)
 poolz = TransactionPool()

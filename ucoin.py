@@ -1,5 +1,4 @@
 from block import Block
-from node import Node
 
 class UCoin():
     def __init__(self, data=None):
