@@ -1,17 +1,22 @@
 from wallet import Wallet
 import socket
-import threading
+from threading import Thread
 import pickle
+import time
 
 localhost = socket.gethostname()
-
+ithread = False
+def print_break():
+    print(f'=====================================================================')
+    return
 class WalletApp():
-    def __init__(self, nport, port, balance=0, miner=None):
+    ithread = False
+    def __init__(self, port):
         self.host = localhost
-        self.nport = nport
         self.port = port
-        self.wallet = Wallet(balance)
+        self.wallet = Wallet(100)
         self.known_wallet = dict()
+        self.transaction = None
     
     def add_connected_wallet(self, tup):
         self.known_wallet[tup[0]] = (tup[1], tup[2])
@@ -20,14 +25,23 @@ class WalletApp():
     def get_transaction(self):
         """ Waiting for new transaction from from keyboard
         """
-        st = input('Enter your new transaction here <pubkey> <amount>:')
+        global ithread
+        st = input('Your command here, show balance / <pubkey> <amount>:')
+        if st == 'show balance':
+            print(self.wallet.balance)
+            ithread = False
+            return
         params = st.split(' ')
-        port = params[0]
-        amount = params[1]
-        return port, amount  
+        port = int(params[0])
+        amount = int(params[1])
+        self.transaction = (port, amount)
+        print(f'Received transaction order.')
+        ithread = False
+        return
 
     def prepare_message(self, mtarget, mtype, data):
-        return bytes(mtarget + ' ', 'utf-8') + bytes(mtype + ' ', 'utf-8') + pickle.dumps(data)
+        print(f'message len: {len(pickle.dumps(data, 0))}')
+        return bytes(mtarget + ' ', 'utf-8') + bytes(mtype + ' ', 'utf-8') + pickle.dumps(data, 0)
 
     def serialize_wallet(self):
         return pickle.dumps(self.wallet)
@@ -41,17 +55,30 @@ class WalletApp():
         print(f'Wallet at port {p}, listen to node at port {self.port}')
         s.listen(1)
         while True:
-            new_connection, _ = s.accept()
-            if self.miner is None:
-                msg = bytes('8', 'utf-8') + self.serialize_wallet()
-                new_connection.send(msg)
-    
+            new_connection, peer_address = s.accept()
+            print(f'Send wallet info to my node at port {peer_address[1]}')
+            x = (self.wallet.key.n, self.wallet.key.e, self.wallet.key.d, self.wallet.key.p, self.wallet.key.q) 
+            msg = self.prepare_message('node', 'walletinfo', x)
+            new_connection.send(msg)
+            while True:
+                global ithread
+                if not ithread:
+                    t = Thread(target=self.get_transaction)
+                    t.start()
+                    del t
+                ithread = True                
+                if self.transaction is not None:
+                    msg = self.prepare_message('node', 'transaction', self.transaction)
+                    new_connection.send(msg)
+                    self.transaction = None
+                
     def receiving(self, p):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind((localhost, p+4000))      # Node port + 4000
         s.connect((localhost, p))
         print(f'I am connecting to miner {p}. My address is {s.getsockname()[1]}')
         while True:
-            msg = s.recv(4096).decode('utf-8')
+            msg = s.recv(4096)
             if len(msg) > 0:
                 self.process_msg(msg)
         return
@@ -66,12 +93,13 @@ class WalletApp():
         return
     # ======================== Process message functions ========================== #
     def process_msg(self, msg): # decoded message
-        comps = msg.split(' ')
-        mtarget, mtype = comps[0], comps[1]
-        if mtarget != 'all' and mtype != 'wallet':
-            return False        # Do nothing because message not concerned me
+        comps = msg.split(b' ')
+        mtarget, mtype = comps[0].decode('utf-8'), comps[1].decode('utf-8')
+        if mtarget == 'node':
+            return None        # Do nothing because message not concerned me
         if mtype == 'balance':
-            self.wallet.balance = int(comps[2])
+            print('\nUpdate balance')
+            self.wallet.balance = pickle.loads(comps[2])
         
 
 

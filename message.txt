@@ -1,0 +1,21 @@
+Message
+1. Target = node | wallet | all
+2. Type = 
+    node + assign ------------------------ assign a port to new connected peer
+    node + 
+    all + transaction -------- send a transaction (from )
+
+Node communicates with its wallet:
+    wallet balance 100 ------------------- send the latest wallet balance
+    node transaction <port> <amount> ----- send a new transaction
+Node communicates with node:
+    - When new node node2 connects to existing node node1
+        + Current condition: node1 listening at port 8000
+        + node1 accepts a connection from node2
+        + node1 generates a (children) port for node2. Example 8001-8003 for 8000
+            *This is sent together with the connection info, so that they can send wallet
+        + Broadcast the info of the newly connected node to all my others
+            *At this time the new node doesn't have wallet, ignore  our wallet
+Wallet w1 wants to make a transaction w2:
+    - w1 makes a connect to its node, and sends the information
+    - 

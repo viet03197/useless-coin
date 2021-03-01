@@ -1,5 +1,5 @@
 from node import Node
-#from walletapp import WalletApp
+from walletapp import WalletApp
 import socket
 import sys
 import threading
@@ -13,10 +13,21 @@ import threading
 host = socket.gethostname()
 port = int(sys.argv[-1])
 node = Node(port)
+next_port = 9000
 is_first = len(sys.argv) == 3
 if is_first:
     t = threading.Thread(target=node.listening)
     t.start()
 else:
-    t = threading.Thread(target=node.receiving, args=[port])
-    t.start()
+    if sys.argv[1] == 'node':
+        print(f'New node')
+        t = threading.Thread(target=node.receiving, args=[port])
+        next_port += 1
+        t.start()
+    else:
+        print(f'New wallet')
+        wa = WalletApp(port+3000)
+        t = threading.Thread(target=wa.receiving, args=[port])
+        t.start()
+        t2 = threading.Thread(target=wa.listening, args=[wa.port])
+        t2.start()
