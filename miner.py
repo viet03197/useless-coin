@@ -8,13 +8,17 @@
 """
 from wallet import Wallet
 from transaction import Transaction
+from p2p import P2PNode
 
 class Miner():
-    def __init__(self, blockchain, pool, wallet, p2p=None):
+    def __init__(self, blockchain, pool, wallet=None, p2p=None):
         self.blockchain = blockchain
         self.pool = pool
         self.wallet = wallet
         self.p2p = p2p
+
+    def set_wallet(self, wallet):
+        self.wallet = wallet
 
     def mine(self):
         data = self.pool.valid_transactions()

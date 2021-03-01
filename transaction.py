@@ -7,12 +7,12 @@ import uuid
 import json
 
 class Transaction():
-    def __init__(self, w1, w2, amount=None):
+    def __init__(self, w1, w2pubkey, amount=None):
         self.id = self.generate_id().hex
         if w1.balance < amount:
             self.output = []
         else:
-            self.output = [Output(amount, w2.pubkey), Output(w1.balance-amount, w1.pubkey)]
+            self.output = [Output(amount, w2pubkey), Output(w1.balance-amount, w1.pubkey)]
         outputs_string = output_list(self.output)
         self.input = Input(w1, outputs_string)
         return
@@ -23,12 +23,12 @@ class Transaction():
     def generate_id(self):
         return uuid.uuid4()
     
-    def update(self, w1, w2, amount):
+    def update(self, w1, w2pubkey, amount):
         if amount > w1.balance:
             return
         #out = Output(w1.balance - amount, w1.pubkey)
         self.output[1].amount -= amount
-        out = Output(amount, w2.pubkey)
+        out = Output(amount, w2pubkey)
         self.output.append(out)
         outputs_string = output_list(self.output)
         self.input = Input(w1, outputs_string)
