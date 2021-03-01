@@ -2,9 +2,9 @@
  Mini-blockchain Project
 How my blockchain work:
 - Node and wallet can be set up as follows:
-  - First node of a blockchain         : python p2p_test.py node 8000
-  - Other nodes (ex. connect to 8000)  : python p2p_test.py node register 8000
-  - Wallet                             : python p2p_test.py wallet register 8000
+  - First node of a blockchain         : ```python p2p_test.py node 8000```
+  - Other nodes (ex. connect to 8000)  : ```python p2p_test.py node register 8000```
+  - Wallet                             : ```python p2p_test.py wallet register 8000```
 
   The id of each node will be generated automatically by the peer it connects to. For example, new nodes connect to 8000 will be assigned from 8001-800x, in which x is the capacity of the peer at 8000. In my code I use 3 so the range is from 8001 to 8003.
   
